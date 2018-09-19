@@ -1,10 +1,13 @@
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
@@ -31,16 +34,34 @@ public class Program extends Application {
 
         Image earth = new Image("world.gif");
         Image stars = new Image("stars.jpeg");
-        gc.drawImage(stars, 0, 0);
+
+
+        final int[] x = {200};
+        final int[] y = {100};
+
+        theScene.setOnKeyPressed(event -> {
+            if(event.getCode() == KeyCode.UP){
+                y[0] -= 2;
+            }else if(event.getCode() == KeyCode.DOWN){
+                y[0] += 2;
+            }else if(event.getCode() == KeyCode.LEFT){
+                x[0] -= 2;
+            }else if(event.getCode() == KeyCode.RIGHT){
+                x[0] += 2;
+            }
+        });
         new AnimationTimer(){
             public void handle(long currentNanoTime){
 
-                gc.drawImage(earth, 200, 100);
+                gc.drawImage(stars, 0, 0);
+                gc.drawImage(earth, x[0], y[0]);
+
                 try {
-                    Thread.sleep(50);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
             }
         }.start();
 
@@ -51,8 +72,17 @@ public class Program extends Application {
         text.setStrokeWidth(2);
         text.setStroke(Color.BLACK);
         text.setText("Hello World!");
-        text.setX(200); text.setY(70);
+        text.setX(200); text.setY(60);
         root.getChildren().add(text);
+
+        Text subtext = new Text();
+        subtext.setFont(Font.font("Georgia", FontWeight.BOLD, FontPosture.REGULAR, 24));
+        subtext.setFill(Color.SKYBLUE);
+        subtext.setStrokeWidth(2);
+        subtext.setStroke(Color.BLACK);
+        subtext.setText("Use the Arrow Keys to move the world!");
+        subtext.setX(100); subtext.setY(95);
+        root.getChildren().add(subtext);
 
         theStage.show();
     }
