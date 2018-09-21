@@ -1,5 +1,6 @@
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -14,13 +15,18 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+
+import javax.sound.midi.*;
+import java.io.File;
+import java.io.IOException;
 
 public class Program extends Application {
-    public static void main(String[] args){
+    public static void main(String[] args) {
         launch(args);
     }
 
-    public void start(Stage theStage){
+    public void start(Stage theStage) throws InvalidMidiDataException, IOException, MidiUnavailableException {
         theStage.setTitle("Martin's World!");
 
         Group root = new Group();
@@ -40,18 +46,18 @@ public class Program extends Application {
         final int[] y = {100};
 
         theScene.setOnKeyPressed(event -> {
-            if(event.getCode() == KeyCode.UP){
+            if (event.getCode() == KeyCode.UP) {
                 y[0] -= 2;
-            }else if(event.getCode() == KeyCode.DOWN){
+            } else if (event.getCode() == KeyCode.DOWN) {
                 y[0] += 2;
-            }else if(event.getCode() == KeyCode.LEFT){
+            } else if (event.getCode() == KeyCode.LEFT) {
                 x[0] -= 2;
-            }else if(event.getCode() == KeyCode.RIGHT){
+            } else if (event.getCode() == KeyCode.RIGHT) {
                 x[0] += 2;
             }
         });
-        new AnimationTimer(){
-            public void handle(long currentNanoTime){
+        new AnimationTimer() {
+            public void handle(long currentNanoTime) {
 
                 gc.drawImage(stars, 0, 0);
                 gc.drawImage(earth, x[0], y[0]);
@@ -65,10 +71,13 @@ public class Program extends Application {
             }
         }.start();
 
-        Media sound = new Media(getClass().getResource("audio/Strad.mp3").toString());
-        MediaPlayer mediaPlayer = new MediaPlayer(sound);
-        mediaPlayer.play();
-        mediaPlayer.setCycleCount(100);
+        Sequence sequence = MidiSystem.getSequence(getClass().getResource("audio/wet.mid"));
+        Sequencer sequencer = MidiSystem.getSequencer();
+        sequencer.open();
+        sequencer.setSequence(sequence);
+        sequencer.setTempoInBPM(85);
+        sequencer.setLoopCount(100);
+        sequencer.start();
 
         Text text = new Text();
         text.setFont(Font.font("Georgia", FontWeight.BOLD, FontPosture.REGULAR, 48));
@@ -76,7 +85,8 @@ public class Program extends Application {
         text.setStrokeWidth(2);
         text.setStroke(Color.BLACK);
         text.setText("Hello World!");
-        text.setX(200); text.setY(60);
+        text.setX(200);
+        text.setY(60);
         root.getChildren().add(text);
 
         Text subtext = new Text();
@@ -85,9 +95,14 @@ public class Program extends Application {
         subtext.setStrokeWidth(2);
         subtext.setStroke(Color.BLACK);
         subtext.setText("Use the Arrow Keys to move the world!");
-        subtext.setX(100); subtext.setY(95);
+        subtext.setX(100);
+        subtext.setY(95);
         root.getChildren().add(subtext);
 
         theStage.show();
+        theStage.getScene().getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, this::closeWindowEvent);
+    }
+    private void closeWindowEvent(WindowEvent event){
+        System.exit(1);
     }
 }
