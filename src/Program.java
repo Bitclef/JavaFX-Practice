@@ -1,13 +1,13 @@
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
@@ -21,7 +21,7 @@ public class Program extends Application {
     }
 
     public void start(Stage theStage){
-        theStage.setTitle("Hello World GUI!");
+        theStage.setTitle("Martin's World!");
 
         Group root = new Group();
         Scene theScene = new Scene(root);
@@ -32,8 +32,8 @@ public class Program extends Application {
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        Image earth = new Image("world.gif");
-        Image stars = new Image("stars.jpeg");
+        Image earth = new Image("pictures/world.gif");
+        Image stars = new Image("pictures/stars.jpeg");
 
 
         final int[] x = {200};
@@ -65,6 +65,10 @@ public class Program extends Application {
             }
         }.start();
 
+        Media sound = new Media(getClass().getResource("audio/Strad.mp3").toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.play();
+        mediaPlayer.setCycleCount(100);
 
         Text text = new Text();
         text.setFont(Font.font("Georgia", FontWeight.BOLD, FontPosture.REGULAR, 48));
