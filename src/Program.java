@@ -24,7 +24,8 @@ public class Program extends Application {
     private int[] earthY = {100};
 
     public static void main(String[] args) {
-        launch(args);
+        System.setProperty("quantum.multithreaded", "false");
+        Application.launch(args);
     }
 
     @Override
@@ -73,12 +74,6 @@ public class Program extends Application {
 
                 gc.drawImage(image2, 0, 0);
                 gc.drawImage(image, earthX[0], earthY[0]);
-
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
 
             }
         }.start();
