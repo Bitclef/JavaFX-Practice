@@ -44,7 +44,7 @@ public class Program extends Application {
 
         animationTimer(gc, earth, stars);
 
-        midiSequencer("audio/emtion.mid", 100, 100);
+        midiSequencer("audio/emotion.mid", 100, 100);
 
         screenText(root, "Hello World!", 200, 60, 48);
         screenText(root, "Use the Arrow Keys to move the world!", 100, 95, 24);
